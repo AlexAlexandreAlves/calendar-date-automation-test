@@ -1,76 +1,55 @@
 # Calendar Date Automation Test
 
-Projeto de testes automatizados utilizando [Playwright](https://playwright.dev/) que valida o fluxo de consultas de datas em um calendário. O projeto adota o **Flow Model Pattern** para organizar e simplificar a interação com as páginas, tornando os testes mais legíveis, reutilizáveis, de fácil ampliacação e manutenção.
+This is an automated testing project using [Playwright](https://playwright.dev/) that checks  the date query flow in a calendar. The project uses the **Flow Model Pattern** to organize and simplify page interactions, making tests more readable, reusable, and easy to extend and maintain.
 
-## Tecnologias Utilizadas
+## Flow Model Pattern
+
+The **Flow Model Pattern** encapsulates complex page operations in flow classes, exposing high-level methods for tests without requiring knowledge of UI element implementation details. This pattern complements the **Page Object Model** by providing a layer that abstracts UI interactions and offers a more behavior-oriented view. As a result, tests are cleaner and focused on "what" is being tested, not "how".
+
+*(See the example in [`src/tests/calendar-range.test.ts`](src/tests/calendar-range.test.ts))*
+
+## Project Structure
 ```
-"@playwright/test": "^1.54.1",
-"@types/node": "^24.1.0"
+calendar-date-automation-test
+├── src
+│   ├── interfaces
+│   │   └── i-input-parameters.ts
+│   ├── resources
+│   │   └── calendar-input-data.json
+│   ├── tests
+│   │   └── calendar-range.test.ts
+│   └── ui
+│       ├── flows
+│       │   └── query-date-flow.ts
+│       └── pages
+│           ├── calendar-page.ts
+│           └── query-result-page.ts
+├── .gitignore
+├── package-lock.json
+├── package.json
+├── playwright.config.ts
+└── README.md
 ```
 
-## Contexto
+## How to Install and Run?
 
-O padrão adotado para o desenvolvimento foi o **Flow Model**. Esse padrão encapsula operações complexas de páginas em classes de fluxo, expondo métodos de alto nível para os testes, sem que eles precisem conhecer detalhes de implementação dos elementos da interface.
-
-## Sobre o Flow Model Pattern
-
-O **Flow Model Pattern** complementa o POM, fornecendo uma camada que abstrai os detalhes de interação com a interface e oferece uma visão mais orientada a comportamento. Isso resulta em testes mais limpos, focados em “o que” está sendo testado, e não em “como”.
-
-**Exemplo:**
-```typescript
-const queryDateFlow = new QueryDateFlow(page);
-await queryDateFlow.setDateAndRunQuery('4', '5', '1', '2024', '25', '11', '2025');
-```
-
-## Estrutura do Projeto
-
-- `src/ui/pages/`: Page Objects com os elementos e ações de cada página.
-- `src/ui/flows/`: Classes de fluxo que encapsulam interações complexas com as páginas.
-- `src/tests/`: Arquivos de teste automatizados.
-- `playwright.config.ts`: Configuração do Playwright (incluindo baseURL).
-
-## Comandos Essenciais
-
-- **Executar todos os testes:**
+- Make sure you have [Node.js](https://nodejs.org/en/download) version 16 or higher installed.
+- In the project root folder, run:
+  ```
+  npm install
+  ```
+- After installing the dependencies:
+  - You can edit the test input data in [`src/resources/calendar-input-data.json`](src/resources/calendar-input-data.json), or leave it as-is to use the default values.
+  - To run the tests, use:
   ```
   npx playwright test
   ```
-
-- **Executar testes em modo UI interativo:**
+  - Or to open the interactive UI:
   ```
   npx playwright test --ui
   ```
 
-- **Executar testes em um navegador específico:**
-  ```
-  npx playwright test --project=chromium
-  ```
+## Technologies Used
 
-- **Executar um arquivo de teste específico:**
-  ```
-  npx playwright test tests/calendar-range.test.ts
-  ```
-
-- **Executar em modo debug:**
-  ```
-  npx playwright test --debug
-  ```
-
-- **Gerar testes automaticamente com Codegen:**
-  ```
-  npx playwright codegen
-  ```
-
-
-## Requisitos
-
-- Node.js instalado
-- Dependências instaladas com:
-  ```
-  npm install
-  ```
-
-## Observações
-
-- O projeto utiliza `baseURL` configurado no `playwright.config.ts`, permitindo o uso de caminhos relativos nos testes.
-- Como a aplicação de exemplo não possui banco de dados persistente, os dados criados existem apenas durante a sessão.
+- @playwright/test: "^1.54.1"
+- @types/node: "^24.1.0"

@@ -1,6 +1,10 @@
 import { expect, Page } from '@playwright/test';
 import { CalendarPage } from '../pages/calendar-page';
 import { QueryResultPage } from '../pages/query-result-page';
+import { IInputParameters } from '../../interfaces/i-input-parameters';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc);
 
 export class QueryDateFlow {
 
@@ -9,20 +13,22 @@ export class QueryDateFlow {
     constructor(private page: Page) { }
 
     async setDateAndRunQuery(
-        numberOfDates: string,
-        startDay: string,
-        startMonth: string,
-        startYear: string,
-        endDay: string,
-        endMonth: string,
-        endYear: string
+        inputParams: IInputParameters
     ) {
         const calendarPage = new CalendarPage(this.page);
 
         await this.page.waitForURL('https://www.random.org/calendar-dates/');
-        await calendarPage.numberOfDatesField.fill(numberOfDates);
-        await calendarPage.selectStartDateRange(startDay, startMonth, startYear);
-        await calendarPage.selectEndDateRange(endDay, endMonth, endYear);
+        await calendarPage.numberOfDatesField.fill(inputParams.numberOfDates.toString());
+        await calendarPage.selectStartDateRange(
+            inputParams.startDay,
+            inputParams.startMonth,
+            inputParams.startYear
+        );
+        await calendarPage.selectEndDateRange(
+            inputParams.endDay,
+            inputParams.endMonth,
+            inputParams.endYear
+        );
         await calendarPage.getDatesButton.click();
     }
 
@@ -48,12 +54,14 @@ export class QueryDateFlow {
             throw new Error('Range dates are not defined');
         }
 
-        const dataA = new Date(rangeDates[0]);
-        const dateB = new Date(rangeDates[1]);
+        const dateA = dayjs.utc(rangeDates[0], 'YYYY-MM-DD');
+        const dateB = dayjs.utc(rangeDates[1], 'YYYY-MM-DD');
 
-        for (const dateStr of dates) {
-            const date = new Date(dateStr);
-            expect(date >= dataA && date <= dateB).toBeTruthy();
-        }
+        const allDatesInRange = dates.every(dateStr => {
+            const date = dayjs.utc(dateStr, 'YYYY-MM-DD');
+            return (date.isSame(dateA) || date.isAfter(dateA))
+                && (date.isSame(dateB) || date.isBefore(dateB));
+        });
+        expect(allDatesInRange).toBeTruthy();
     }
 }
