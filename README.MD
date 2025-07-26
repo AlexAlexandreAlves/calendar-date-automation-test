@@ -33,10 +33,10 @@ calendar-date-automation-test
 
 ## How to Install and Run?
 
-- Make sure you have [Node.js](https://nodejs.org/en/download) version 16 or higher installed.
-- In the project root folder, run:
+- Make sure you have [Node.js](https://nodejs.org/en/download) version 18 or higher installed.
+- In the project root folder, run (it will install the dependencies and the playwright browsers):
   ```
-  npm install
+  npm run setup
   ```
 - After installing the dependencies:
   - You can edit the test input data in [`src/resources/calendar-input-data.json`](src/resources/calendar-input-data.json), or leave it as-is to use the default values.
